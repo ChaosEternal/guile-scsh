@@ -1,0 +1,18 @@
+This is a pre alpha software, use it on your own risk. The most noteworthy
+problem is that it's not kind to though who types in errors, the failures
+are so badly handled that it can ruin the enclosing shell. But on the other 
+hand it can demo some of the features in the original scsh quite well.
+
+To use it.
+
+1. add this directory to guile's %load-path
+
+2. use a module in the scsh directory that export a feature you would like to use
+
+3. use it (prefereable correctly without errors or there will be dragons)
+
+Example:
+scheme@(guile-user)> (use-modules (scsh syntax))
+scheme@(guile-user)> (& (| (ls) (grep COP)))
+$4 = #{proc 3084}
+scheme@(guile-user)> COPYING
