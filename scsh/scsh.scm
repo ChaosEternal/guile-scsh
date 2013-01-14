@@ -24,6 +24,7 @@
   :use-module (scsh rdelim)
   :use-module (scsh sighandlers)
   :use-module (scsh procobj)
+  :use-module (scsh errno)
   :export (call-terminally fork/pipe %fork/pipe tail-pipe tail-pipe+
                            alist-update alist-compress add-before add-after
                            with-env* with-total-env* with-cwd* with-umask*
