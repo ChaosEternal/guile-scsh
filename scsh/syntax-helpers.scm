@@ -187,7 +187,7 @@
     ((_ (fdes fname 0))
      (shell-open fname 0 fdes))
     ((_ (fdes fname 0) f l ...)
-     (f (open-shell fname 0 fdes) l ...))
+     (f (shell-open fname 0 fdes) l ...))
     ((_ (fdes fname 1))
      (shell-open fname open/create+trunc fdes))
     ((_ (fdes fname 1) f l ...)
