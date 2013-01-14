@@ -2,6 +2,7 @@
 (define-module (scsh fdports)
   :use-module (scsh bitwise)
   :use-module (scsh syscalls)
+  :use-module (scsh scsh)
   :export (open/create+trunc open/write+append+create shell-open))
 
 ;; move->fdes, dup, dup->fdes, dup->inport, dup->outport are defined by

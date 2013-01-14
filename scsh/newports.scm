@@ -16,7 +16,7 @@
 
   :export (fdport? set-port-buffering 
                    bufpol/block bufpol/line bufpol/none
-                   open-file open-input-file open-output-file
+                   open-file ;;; open-input-file open-output-file
                    call/fdes close-after
                    with-current-input-port* with-current-output-port*
                    with-current-error-port*
@@ -64,16 +64,16 @@
 
 (define open-file open)
 
-(define (open-input-file fname . maybe-flags)
-  (let ((flags (:optional maybe-flags 0)))
-    (open-file fname (deposit-bit-field flags open/access-mask open/read))))
+;; (define (open-input-file fname . maybe-flags)
+;;   (let ((flags (:optional maybe-flags 0)))
+;;     (open-file fname (deposit-bit-field flags open/access-mask open/read))))
 
-(define (open-output-file fname . rest)
-  (let* ((flags (if (pair? rest) (car rest)
-		    (bitwise-ior open/create open/truncate))) ; default
-	 (maybe-mode (if (null? rest) '() (cdr rest)))
-	 (flags (deposit-bit-field flags open/access-mask open/write)))
-    (apply open-file fname flags maybe-mode)))
+;; (define (open-output-file fname . rest)
+;;   (let* ((flags (if (pair? rest) (car rest)
+;; 		    (bitwise-ior open/create open/truncate))) ; default
+;; 	 (maybe-mode (if (null? rest) '() (cdr rest)))
+;; 	 (flags (deposit-bit-field flags open/access-mask open/write)))
+;;     (apply open-file fname flags maybe-mode)))
 
 
 (define (call/fdes fd/port proc)
