@@ -8,6 +8,7 @@
   :use-module (scsh errno)
   :use-module (scsh optional)
   :use-module (ice-9 optargs)
+  :use-module (scsh let-optionals-aster)
   :re-export (read-string!/partial write-string/partial) ;; from (ice-9 rw)
   :export (bogus-substring-spec? read-string/partial
                                  read-string! read-string write-string))
@@ -45,7 +46,7 @@
 	(catch 'system-error
 	       (lambda ()
 		 (let ((nread (reader s source i end)))
-		   (if (zero? nread) ; EOF
+		   (if (not nread) ; EOF
 		       (let ((result (- i start)))
 			 (and (not (zero? result)) result))
 		       (loop (+ i nread)))))
@@ -55,11 +56,11 @@
 		 (apply scm-error args))))))
 
 (define (read-string! s . args)
-  (let-optionals args ((fd/port (current-input-port))
+  (let-optionals* args ((fd/port (current-input-port))
 		       (start   0)
 		       (end     (string-length s)))
 		 (generic-read-string! s start end
-				       uniform-array-read!
+				       read-string!/partial
 				       fd/port)))
 
 (define (read-string len . maybe-fd/port) 
@@ -87,7 +88,7 @@
 		 (apply scm-error args))))))
 
 (define (write-string s . args)
-  (let-optionals args ((fd/port (current-output-port))
+  (let-optionals* args ((fd/port (current-output-port))
 		       (start   0)
 		       (end     (string-length s)))
 		 (generic-write-string s start end

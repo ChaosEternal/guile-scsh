@@ -11,6 +11,7 @@
   :use-module (scsh errno)
   :use-module (ice-9 optargs)
   :use-module (scsh optional)
+  :use-module (scsh let-optionals-aster)
   :export (read-line read-paragraph read-delimited read-delimited!
                      %read-delimited! skip-char-set))
 
@@ -62,7 +63,7 @@
 ;;; number of reads, but uses at most double the optimal buffer space.
 
 ;(define (read-delimited delims . args)
-;  (let-optionals args ((port         (current-input-port))
+;  (let-optionals* args ((port         (current-input-port))
 ;		       (delim-action 'trim))
 ;    (let ((substr (lambda (s end)		; Smart substring.
 ;		    (if (= end (string-length s)) s
@@ -127,7 +128,7 @@
 ;;; a following read can pick up the delimiter char.
 
 ;(define (read-delimited! delims buf . args) ; [port delim-action start end]
-;  (let-optionals args ((port         (current-input-port))
+;  (let-optionals* args ((port         (current-input-port))
 ;		       (delim-action 'trim)
 ;		       (start        0)
 ;		       (end          (string-length buf)))
@@ -197,7 +198,7 @@
 ;;; operation.
 
 ;(define (%read-delimited! delims buf gobble? . args)
-;  (let-optionals args ((port  (current-input-port))
+;  (let-optionals* args ((port  (current-input-port))
 ;		       (start 0)
 ;		       (end   (string-length buf)))
 
@@ -310,7 +311,7 @@
 (define blank-line-regexp (make-regexp "[ \t]*\n"))
 (define (regexp-search r l) (regexp-match? (regexp-exec r l)))
 (define (read-paragraph . args)
-  (let-optionals args ((port         (current-input-port))
+  (let-optionals* args ((port         (current-input-port))
 		       (handle-delim 'trim))
     ;; First, skip all blank lines.
     (let lp ()

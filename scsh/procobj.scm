@@ -21,6 +21,7 @@
   :use-module (scsh sighandlers)
   :use-module (scsh weak)
   :use-module (scsh errno)
+  :use-module (scsh let-optionals-aster)
   :export (proc:pid proc? pid->proc autoreap-policy reap-zombies
                     new-child-proc wait/poll wait/stopped-children wait 
                     wait-any wait-process-group reaped-procs))
@@ -268,7 +269,7 @@
 ;;; early autoreaping, since the reaper loses process-group information.
 
 (define (wait-process-group . args)
-  (let-optionals args ((proc-group 0) (flags 0))
+  (let-optionals* args ((proc-group 0) (flags 0))
     (let ((proc-group (cond ((integer? proc-group) proc-group)
 			     ((proc? proc-group)    (proc:pid proc-group))
 			     (else (error "Illegal argument" wait-process-group

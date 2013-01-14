@@ -39,7 +39,7 @@
 
   
   (len        string-collector:len       set-string-collector:len)
-  (chunks     string-collector:echunks   set-string-collector:echunks)
+  (chunks     string-collector:chunks   set-string-collector:chunks)
   (chunk      string-collector:chunk     set-string-collector:chunk)
   (chunk-left string-collector:chunk-left
               set-string-collector:chunk-left))

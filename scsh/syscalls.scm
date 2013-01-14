@@ -16,6 +16,7 @@
   :use-module (scsh fname)
   :use-module (scsh procobj)
   :use-module (scsh errno)
+  :use-module (scsh let-optionals-aster)
   :export (export %exec %%fork cwd user-gid user-effective-gid set-gid
 	user-supplementary-gids user-uid user-effective-uid set-uid
 	user-login-name pid parent-pid set-process-group
@@ -834,7 +835,7 @@
   ignore)
 
 (define (directory-files . args)
-  (let-optionals args ((dir ".")
+  (let-optionals* args ((dir ".")
 		       (dotfiles? #f))
 		 (check-arg string? dir directory-files)
 		 (let ((dport (opendir
