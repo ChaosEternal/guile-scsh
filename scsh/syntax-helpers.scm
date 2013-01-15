@@ -197,9 +197,9 @@
     ((_ (fdes exp 2) f l ...)
      (f (move->fdes (open-string-source exp) fdes) l ...))
     ((_ (fdes fname 3))
-     (shell-open fname (open/write+append+create fdes)))
+     (shell-open fname open/write+append+create fdes))
     ((_ (fdes fname 3) f l ...)
-     (f (shell-open fname (open/write+append+create fdes)) l ...))))
+     (f (shell-open fname open/write+append+create fdes) l ...))))
 
 (define-syntax transcribe-redirection 
   (syntax-rules (< > << >> = - stdports)
@@ -211,9 +211,10 @@
     
     ((_ (<< . args) . l)
      (parse-spec (args 0 do-tr 2) . l))
-    
+
     ((_ (>> . args) . l)
      (parse-spec (args 1 do-tr 3) . l))
+
 
     ((_ (= x y))
      (dup->fdes y x))
