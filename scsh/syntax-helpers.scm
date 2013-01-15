@@ -211,10 +211,9 @@
     
     ((_ (<< . args) . l)
      (parse-spec (args 0 do-tr 2) . l))
-
+    
     ((_ (>> . args) . l)
      (parse-spec (args 1 do-tr 3) . l))
-
 
     ((_ (= x y))
      (dup->fdes y x))
