@@ -342,11 +342,11 @@
 
 
 (define *temp-file-template*
-  (make-fluid (string-append "/tmp/" (number->string (pid)) ".~a")))
+  (make-scsh-fluid (string-append "/tmp/" (number->string (pid)) ".~a")))
 
 
 (define (temp-file-iterate maker . maybe-template)
-  (let ((template (:optional maybe-template (fluid *temp-file-template*))))
+  (let ((template (:optional maybe-template (scsh-fluid *temp-file-template*))))
     (let loop ((i 0))
       (if (> i 1000) (error "Can't create temp-file")
 	  (let ((fname (format #f template (number->string i))))
@@ -701,7 +701,7 @@
   (%exec prog (cons prog arglist) env))
 
 ;(define (exec-path/env prog env . arglist)
-;  (cond ((exec-path-search (stringify prog) (fluid exec-path-list)) =>
+;  (cond ((exec-path-search (stringify prog) (scsh-fluid exec-path-list)) =>
 ;	 (lambda (binary)
 ;	   (apply exec/env binary env arglist)))
 ;	(else (error "No executable found." prog arglist))))
@@ -723,7 +723,7 @@
 	  (for-each (lambda (dir)
 		      (let ((binary (string-append dir "/" prog)))
 			(false-if-exception (%exec binary arglist env))))
-		    (fluid exec-path-list)))))
+		    (scsh-fluid exec-path-list)))))
 
     (error "No executable found." prog arglist))
 	 
@@ -783,7 +783,7 @@
 
 ;;; Some globals:
 (define home-directory "")
-(define exec-path-list (make-fluid '()))
+(define exec-path-list (make-scsh-fluid '()))
 
 (define (init-scsh-vars quietly?)
   (set! home-directory
@@ -791,7 +791,7 @@
 	      (else (if (not quietly?)
 			(warn "Starting up with no home directory ($HOME)."))
 		    "/")))
-  (set-fluid! exec-path-list
+  (set-scsh-fluid! exec-path-list
 	      (cond ((getenv "PATH") => split-colon-list)
 		    (else (if (not quietly?)
 			      (warn "Starting up with no path ($PATH)."))

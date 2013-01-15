@@ -2,19 +2,19 @@
 
 (define-module (scsh fluid))
 
-(export make-fluid set-fluid! fluid let-fluid)
+(export make-scsh-fluid set-scsh-fluid! scsh-fluid let-scsh-fluid)
 
 (define guile-make-fluid
   (module-ref (resolve-module '(guile)) 'make-fluid))
 
-(define (make-fluid value)
+(define (make-scsh-fluid value)
   (let ((result (guile-make-fluid)))
     (fluid-set! result value)
     result))
 
-(define set-fluid! fluid-set!)
+(define set-scsh-fluid! fluid-set!)
 
-(define fluid fluid-ref)
+(define scsh-fluid fluid-ref)
 
-(define (let-fluid fluid value thunk)
+(define (let-scsh-fluid fluid value thunk)
   (with-fluids* (list fluid) (list value) thunk))
