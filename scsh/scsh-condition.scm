@@ -3,6 +3,7 @@
 
 (define-module (scsh scsh-condition)
   :use-module (ice-9 stack-catch)
+  :use-module (scsh errno)
   :export (errno-error with-errno-handler* with-errno-handler))
 
 
