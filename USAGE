@@ -16,3 +16,10 @@ scheme@(guile-user)> (use-modules (scsh syntax))
 scheme@(guile-user)> (& (| (ls) (grep COP)))
 $4 = #{proc 3084}
 scheme@(guile-user)> COPYING
+
+More Examples:
+scheme@(guile-user)> (define ls '(ls --color=auto))
+scheme@(guile-user)> (run ,ls)
+COPYING  guile-scsh.scm  scsh  test  USAGE
+$3 = 0
+
