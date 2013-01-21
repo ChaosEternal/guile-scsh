@@ -55,7 +55,14 @@
 
 ;;; More portably, but less usefully:
 (define (call-terminally thunk)
-  (thunk)
+  (catch #t
+        (lambda () (thunk))
+        (lambda (key . args)
+          (apply display-error #f
+                         (current-error-port)
+                         args
+                         )
+          (primitive-exit 111)))
   (primitive-exit 0))
 
 ;;; Like FORK, but the parent and child communicate via a pipe connecting
