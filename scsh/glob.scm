@@ -2,8 +2,11 @@
 
 ;;; Copyright (c) 1994 by David Albertz (dalbertz@clark.lcs.mit.edu).
 ;;; Copyright (c) 1994 by Olin Shivers   (shivers@clark.lcs.mit.edu).
+;;; Copyright (c) 2013 by Chaos Eternal (chaoseternal@gmail.com).
 ;;; 
 ;;; See file COPYING.
+
+;;; Chaos: this modification is pretty dirty.
 
 ;;; Usage:	(glob pattern-list)
 ;;;                 pattern-list := a list of glob-pattern strings
@@ -24,7 +27,7 @@
   :use-module (scsh scsh-condition)
   :use-module (scsh scsh)
   :use-module (ice-9 regex)
-  :export (glob directory-files test-glob->regexp))
+  :export (glob directory-files glob->regexp-list))
 
 (define char->ascii char->integer)
 
@@ -124,13 +127,9 @@
 (define re-any ".")
 (define re-eos "$")
 (define re-bos "^")
-(define (re-char-set ng? x)
-  (if ng?
-      (string-append "^" (char-set->string x))
-      (char-set->string x)))
 
-(define test-glob->regexp
-  (let ((dot-star (re-repeat 0 #f re-any))) ; ".*" or (* any)
+(define glob->regexp-list
+  (let ((dot-star ".*")) ; ".*" or (* any)
     (lambda (pat)
       (let ((pat-len (string-length pat))
 
@@ -198,48 +197,6 @@
 				   elts))
 		       (+ 1 i))))
 	      (else (lp (cons c elts) i))))))))
-
-(define (x-parse-glob-bracket pat i)
-  (let ((pat-len (string-length pat)))
-    (receive (negate? i) (if (and (< i pat-len) (char=? #\^ (string-ref pat i)))
-			     (values #t (+ i 1))
-			     (values #f i))
-     
-      (let lp ((elts '()) (i i))
-	(if (>= i pat-len)
-	    (error "Ill-formed glob pattern -- no terminating close-bracket" pat)
-
-	    (let ((c (string-ref pat i))
-		  (i (+ i 1)))
-	      (case c
-		((#\])
-		 (let ((cset (fold (lambda (elt cset)
-				     (if (char? elt)
-					 (char-set-adjoin! cset elt)
-					 (ucs-range->char-set! (char->ascii (car elt))
-							       (+ 1 (char->ascii (cdr elt)))
-							       #f cset)))
-				   (char-set-copy char-set:empty)
-				   elts)))
-		   (values (re-char-set negate?
-					   
-					    cset)
-			   i)))
-
-		((#\\)
-		 (if (>= i pat-len)
-		     (error "Ill-formed glob pattern -- ends in backslash" pat)
-		     (lp (cons (string-ref pat i) elts) (+ i 1))))
-
-		((#\-)
-		 (cond ((>= i pat-len)
-			(error "Ill-formed glob pattern -- unterminated range." pat))
-		       ((or (null? elts) (not (char? (car elts))))
-			(error "Ill-formed glob pattern -- range has no beginning." pat))
-		       (else (lp (cons (cons (car elts) (string-ref pat i)) elts)
-				 (+ i 1)))))
-
-		(else (lp (cons c elts) i)))))))))
 
 
 ;;; Is the glob pattern free of *'s, ?'s and [...]'s?
