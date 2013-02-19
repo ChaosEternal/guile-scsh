@@ -118,7 +118,7 @@
 ;;; Translate a brace-free glob pattern to a regular expression.
 
 (define (glob->regexp pat)
-  pat)
+  (string-join (glob->regexp-list pat) ""))
 
 (define (re-repeat x y z)
   ".*"
