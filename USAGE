@@ -11,7 +11,15 @@ To use it.
 
 3. use it (prefereable correctly without errors or there will be dragons)
 
-Example:
+Example of Startup:
+$ guile -L .
+or 
+$ export GUILE_LOAD_PATH=`pwd`
+$ guile
+
+
+
+Example of running a command on background:
 scheme@(guile-user)> (use-modules (scsh syntax))
 scheme@(guile-user)> (& (| (ls) (grep COP)))
 $4 = #{proc 3084}

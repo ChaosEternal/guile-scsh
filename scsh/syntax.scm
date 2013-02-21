@@ -7,7 +7,7 @@
   :use-module (scsh syntax-helpers)
   :use-module (scsh scsh)
   :use-module (scsh procobj)  
-  :export-syntax (exec-epf & run || && run/collecting
+  :export-syntax (pwd cd cd* exec-epf & run || && run/collecting
                    run/port+proc run/port run/strings run/file run/string
                    run/sexp run/sexps))
 
@@ -77,3 +77,18 @@
 ;(define-simple-syntax (test-mac trans . form)
 ;  (pp (expand-mac trans (quote form))))
 
+(define-syntax cd
+  (syntax-rules ()
+    ((_) (cd* (getenv "HOME")))
+    ((_ -) (cd* (getenv "OLDPWD")))
+    ((_ p ...) (apply cd* `(p ...)))))
+
+(define (cd* . p)
+  (begin
+    (setenv "OLDPWD" (getcwd))
+    (chdir (stringify (car p)))))
+
+(define (pwd)
+  (run (pwd)))
+
+  
