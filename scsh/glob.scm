@@ -27,15 +27,21 @@
   :use-module (scsh scsh-condition)
   :use-module (scsh scsh)
   :use-module (ice-9 regex)
-  :export (glob directory-files glob->regexp-list))
+  :use-module (scsh ssyntax)
+  :export (glob glob* directory-files glob->regexp-list))
 
 (define char->ascii char->integer)
 
-(define (glob . pattern-list)
+(define-syntax glob 
+  (syntax-rules ()
+    ((_ rest ...) (apply glob*  `(rest ...)))))
+
+(define (glob* . pattern-list)
   ;; Expand out braces, and apply GLOB-ONE-PATTERN to all the result patterns.
   (apply append
 	 (map glob-one-pattern
-	      (apply append (map glob-remove-braces pattern-list)))))
+	      (apply append (map glob-remove-braces 
+				 (map stringify pattern-list))))))
 
 (define (split-file-name fn)
   (string-split fn #\/))

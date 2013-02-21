@@ -23,3 +23,30 @@ scheme@(guile-user)> (run ,ls)
 COPYING  guile-scsh.scm  scsh  test  USAGE
 $3 = 0
 
+Example on Globbing:
+scheme@(guile-user)> (use-modules (scsh glob))
+scheme@(guile-user)> (use-modules (scsh syntax))
+scheme@(guile-user)> (glob /bin/l*)
+$1 = ("/bin/lessecho" "/bin/lsblk" "/bin/lessfile" "/bin/ls" "/bin/lesskey" "/bin/login" "/bin/ln" "/bin/lowntfs-3g" "/bin/lsmod" "/bin/lesspipe" "/bin/loadkeys" "/bin/less")
+scheme@(guile-user)> (run (ls . ,(glob /bin/l*)))
+/bin/less      /bin/lesskey   /bin/loadkeys    /bin/ls
+/bin/lessecho  /bin/lesspipe  /bin/login       /bin/lsblk
+/bin/lessfile  /bin/ln        /bin/lowntfs-3g  /bin/lsmod
+$2 = 0
+
+More Examle on Globbing:
+scheme@(guile-user)> (define k "/bin/l*")
+scheme@(guile-user)> (run (ls -l . ,(glob ,k)))
+-rwxr-xr-x 1 root root 149384 Aug 11  2011 /bin/less
+-rwxr-xr-x 1 root root  10368 Aug 11  2011 /bin/lessecho
+lrwxrwxrwx 1 root root      8 Aug 11  2011 /bin/lessfile -> lesspipe
+-rwxr-xr-x 1 root root  15824 Aug 11  2011 /bin/lesskey
+-rwxr-xr-x 1 root root   7506 Aug 11  2011 /bin/lesspipe
+-rwxr-xr-x 1 root root  47688 Nov 20 06:25 /bin/ln
+-rwxr-xr-x 1 root root 111320 Apr  1  2012 /bin/loadkeys
+-rwxr-xr-x 1 root root  44928 Sep 13 06:29 /bin/login
+-rwxr-xr-x 1 root root  63888 Sep 11 12:12 /bin/lowntfs-3g
+-rwxr-xr-x 1 root root 105840 Nov 20 06:25 /bin/ls
+-rwxr-xr-x 1 root root  44640 Mar 30  2012 /bin/lsblk
+-rwxr-xr-x 1 root root   6272 Nov 21  2011 /bin/lsmod
+$3 = 0
