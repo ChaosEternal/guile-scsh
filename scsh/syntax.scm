@@ -80,13 +80,17 @@
 (define-syntax cd
   (syntax-rules ()
     ((_) (cd* (getenv "HOME")))
-    ((_ -) (cd* (getenv "OLDPWD")))
     ((_ p ...) (apply cd* `(p ...)))))
 
 (define (cd* . p)
-  (begin
-    (setenv "OLDPWD" (getcwd))
-    (chdir (stringify (car p)))))
+  (let ((cwd (getcwd))
+	(oldcwd (getenv "OLDPWD")))
+    (setenv "OLDPWD" cwd)
+    (let ((destdir (car p)))
+      (if (eq? destdir '-)
+	  (chdir oldcwd)
+	  (chdir (stringify destdir))))))
+
 
 (define (pwd)
   (run (pwd)))
