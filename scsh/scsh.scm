@@ -355,8 +355,8 @@
 (define (temp-file-iterate maker . maybe-template)
   (let ((template (:optional maybe-template (scsh-fluid *temp-file-template*))))
     (let loop ((i 0))
-      (if (> i 1000) (error "Can't create temp-file")
-	  (let ((fname (format #f template (number->string i))))
+      (if (> i 10000) (error "Can't create temp-file")
+	  (let ((fname (format #f template (number->string (random 100000 (random-state-from-platform))))))
 	    (receive retvals (with-errno-handler
 			       ((errno data)
 				((errno/exist) #f))
