@@ -28,7 +28,7 @@
   :export (call-terminally fork/pipe %fork/pipe tail-pipe tail-pipe+
                            alist-update alist-compress add-before add-after
                            with-env* with-total-env* with-cwd* with-umask*
-                           create-temp-file temp-file-channel
+                           create-temp-file temp-file-channel call/temp-file
                            open-string-source run/collecting* run/port+proc*
                            run/port* run/file* run/string* run/strings* 
                            run/sexp* run/sexps*

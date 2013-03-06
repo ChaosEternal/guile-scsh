@@ -31,6 +31,10 @@ scheme@(guile-user)> (run ,ls)
 COPYING  guile-scsh.scm  scsh  test  USAGE
 $3 = 0
 
+Example on call/temp-file:
+ (call/temp-file (lambda () (run (ls ) (= 1 (current-output-port)))) (lambda (x) (run (,@emacs ,x))))
+
+
 Example on Globbing:
 scheme@(guile-user)> (use-modules (scsh glob))
 scheme@(guile-user)> (use-modules (scsh syntax))
@@ -44,7 +48,7 @@ $2 = 0
 
 More Examle on Globbing:
 scheme@(guile-user)> (define k "/bin/l*")
-scheme@(guile-user)> (run (ls -l . ,(glob ,k)))
+scheme@(guile-user)> (run (ls -l ,@(glob ,k)))
 -rwxr-xr-x 1 root root 149384 Aug 11  2011 /bin/less
 -rwxr-xr-x 1 root root  10368 Aug 11  2011 /bin/lessecho
 lrwxrwxrwx 1 root root      8 Aug 11  2011 /bin/lessfile -> lesspipe
