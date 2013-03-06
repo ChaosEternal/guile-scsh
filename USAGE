@@ -32,7 +32,10 @@ COPYING  guile-scsh.scm  scsh  test  USAGE
 $3 = 0
 
 Example on call/temp-file:
- (call/temp-file (lambda () (run (ls ) (= 1 (current-output-port)))) (lambda (x) (run (,@emacs ,x))))
+scheme@(guile-user)> (call/temp-file (lambda () (run (ls ) (= 1 (current-output-port)))) (lambda (x) (run (,@ls -l ,x))))
+-rw------- 1 chaos chaos 44 Mar  6 15:41 /tmp/5310.61038
+$12 = 0
+
 
 
 Example on Globbing:
