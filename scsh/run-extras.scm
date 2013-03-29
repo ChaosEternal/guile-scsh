@@ -1,6 +1,7 @@
 (define-module (scsh run-extras)
   :use-module (scsh syntax)
-  :export (run/file* run/collecting))
+  :use-module (scsh scsh)
+  :export (run/file* run/collecting*))
 
 (define (run/file* thunk)
   (let ((fname (create-temp-file)))

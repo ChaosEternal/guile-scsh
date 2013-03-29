@@ -29,8 +29,8 @@
                            alist-update alist-compress add-before add-after
                            with-env* with-total-env* with-cwd* with-umask*
                            create-temp-file temp-file-channel call/temp-file
-                           open-string-source run/collecting* run/port+proc*
-                           run/port* run/file* run/string* run/strings* 
+                           open-string-source run/port+proc*
+                           run/port* run/string* run/strings* 
                            run/sexp* run/sexps*
                            port->string port->string-list port->sexp-list
                            port->list port-fold fork/pipe+

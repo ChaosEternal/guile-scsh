@@ -7,6 +7,7 @@
   :use-module (scsh syntax-helpers)
   :use-module (scsh scsh)
   :use-module (scsh procobj)  
+  :use-module (scsh run-extras)
   :export-syntax (pwd cd cd* exec-epf & run || && run/collecting
                    run/port+proc run/port run/strings run/file run/string
                    run/sexp run/sexps))
