@@ -11,7 +11,7 @@
 ;; 
 ;; (run (cat ) (<< #"""
 ;; here strings
-;; with " " and \\ \t "" \0 \r \n
+;; with " " and \t "" \0 \r \n
 ;; """))
 ;; 
 ;; (run (cat ) (<< #'''
@@ -54,8 +54,6 @@
        (loop (cons #\tab chars)))
       ((#\0 #\\ . chars)
        (loop (cons #\null chars)))
-      ((#\\ #\\ . chars)
-       (loop (cons #\\ chars)))
       (_ (let ((c (read-char port)))
            (if (eof-object? c)
                (error "EOF within here-string")
