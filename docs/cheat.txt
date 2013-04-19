@@ -1,0 +1,147 @@
+guile-scsh cheat sheet. 
+Tailored from Scsh cheat sheet By Chaos
+Apr 2013
+
+Scsh cheat sheet
+Olin Shivers
+November 1996
+
+This cheat sheet is intentionally kept brief and minimalist.
+It is intended to function as an ASCII-format reminder for the
+full manual, not as the definition. It can be read using GNU Emacs's
+outline mode.
+
+It is also not entirely up-to-date. I'd appreciate getting updates from users.
+-------------------------------------------------------------------------------
+
+* High-level forms
+
+Extended process form:
+    (PF [REDIR1 ...])
+
+Redirection:
+    (<  [FDES] FILE-NAME)
+    (>  [FDES] FILE-NAME)
+    (<< [FDES] OBJECT)
+    (=  FDES FDES/PORT)
+    (-  FDES/PORT)
+    stdports
+Subforms are implicitly backquoted.
+
+Process form:
+    (| PF1 ...)				; pipeline
+    (|+ CONNECT-LIST PF1 ...)		; complex pipeline
+    (begin . BODY)			; Scheme form
+    (epf . EPF)				; Embedded extended process form
+    (PROG ARG1 ... ARGn)		; Exec a program
+Subforms are implicitly backquoted.
+
+Using process forms in Scheme:
+    (exec-epf . EPF)	; Nuke the current process.
+    (& . EPF)		; Fork process in background. Return proc object.
+    (run . EPF)		; Run process. Return exit code.
+
+    (& . EPF) = (fork (lambda () (exec-epf . EPF)))
+    (run . EPF) = (wait (& . EPF))
+
+Interfacing to subprocess I/O:
+    (run/port . EPF) -> port
+    (run/file . EPF) -> string
+    (run/string . EPF) -> string
+    (run/strings . EPF) -> string list
+    (run/sexp . EPF) -> object
+    (run/sexps . EPF) -> list
+
+There are procedural equivalents for each of these, e.g., run/port* and
+run/file*, that take thunk arguments for the subprocess.
+
+(port->string PORT) -> string
+    Read until EOF on PORT, return data as a string.
+
+(port->string-list PORT) -> string list
+    Repeatedly apply READ-LINE to PORT until EOF. Return list of lines read.
+
+(port->sexp-list PORT) -> list
+    Repeatedly apply READ to PORT until EOF. Return list of items read.
+
+(port->list READER PORT)
+    Repeatedly apply READER to PORT until EOF. Return list of items read.
+
+(reduce-port PORT READER OP . SEEDS)
+    Evaluate (OP (READER PORT) . SEEDS) to get a new set of seeds
+    (OP must return as many values as there are SEEDS). When
+    a port read returns EOF, the current set of seed values are
+    returned as multiple values.
+
+(run/port+proc  . EPF) -> [port proc]
+(run/port+proc* THUNK) -> [port proc]
+
+(run/collecting  FDS . EPF) -> [port ...]
+(run/collecting* FDS THUNK) -> [port ...]
+    RUN/COLLECTING implicitly backquotes FDS.
+
+(|| PF1 ... PFn)
+(&& PF1 ... PFn)
+    Conditionally execute processes.
+
+(char-filter   filter) -> procedure
+(string-filter filter [buflen]) -> procedure
+
+* System calls
+
+** Errors
+
+(errno-error errno SYSCALL . DATA)
+(with-errno-handler* HANDLER THUNK) -> value of thunk
+    HANDLER is called on two arguments: (HANDLER ERRNO PACKET)
+    where PACKET is a list of the form (ERRNO-MSG SYSCALL . DATA)
+    If HANDLER returns at all, the handler search continues upwards.
+
+(with-errno-handler HANDLER-SPEC . BODY)
+    HANDLER-SPEC is of the form
+    	((ERRNO PACKET) CLAUSE ...)
+    ERRNO and PACKET are variables bound to the errno error being raised.
+    There are two forms for handler clauses:
+    	((ERRNO ...) . BODY)
+    	(else . BODY)
+    ERRNO are expressions evaluating to errno integers.
+
+** Port and file descriptors
+(fdes->inport  fd) -> port
+(fdes->outport fd) -> port
+(port->fdes port)  -> fixnum
+    Increment port's revealed count.
+
+(port-revealed port) -> integer or #f
+(release-port-handle port)
+(call/fdes fd/port consumer) -> value(s) of consumer
+
+
+** Process state
+
+(umask) -> fixnum
+(set-umask perms)
+(with-umask* perms thunk) -> values of thunk
+(with-umask perms . body) -> values of body
+
+(chdir [fname])
+(cwd) -> string
+(with-cwd* fname thunk) -> value(s) of thunk
+(with-cwd fname . body) -> value(s) of body
+
+(pid) -> fixnum
+(parent-pid) -> fixnum
+(process-group) -> fixnum
+(set-process-group [proc/pid] pgrp)
+
+(user-login-name) -> string
+(user-uid) -> fixnum 
+(user-effective-uid) -> fixnum
+(user-gid) -> fixnum
+(user-effective-gid) -> fixnum
+(user-supplementary-gids) -> fixnum list
+(set-uid uid)
+(set-gid gid)
+
+(process-times) -> [ucpu scpu uchildren schildren]
+
