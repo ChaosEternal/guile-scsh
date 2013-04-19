@@ -12,14 +12,14 @@
                deprecated-proc
                deposit-bit-field
                real->exact-integer
-               call/cc
+;;               call/cc
                ;; reverse! omitted.
                ;; delete, filter, first, fold, fold-right, any, 
                ;; every: use srfi-1.
                ;; first: incompatible with srfi-1.
                ))
 
-(define call/cc call-with-current-continuation)
+;;(define call/cc call-with-current-continuation)
 
 (define (del elt lis)
   (letrec ((del (lambda (lis)
