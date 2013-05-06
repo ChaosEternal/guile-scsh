@@ -1,0 +1,4 @@
+Just copy directory scsh to your site-packages dir, eg, (run (cp -r scsh ,(%site-dir))).
+
+Or, run command:
+sudo guile install.scm
