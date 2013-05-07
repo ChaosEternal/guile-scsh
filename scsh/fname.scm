@@ -1,9 +1,9 @@
 ;;; Code for processing Unix file names.
 ;;; Copyright (c) 1992 by Olin Shivers (shivers@lcs.mit.edu).
-;;; Please imagine a long, tedious, legalistic 5-page gnu-style copyright
-;;; notice appearing here to the effect that you may use this code any
-;;; way you like, as long as you don't charge money for it, remove this
-;;; notice, or hold me liable for its results.
+;;; See file COPYING
+
+;;; Ported from scsh (scsh.net) version 0.6.7 with GPL statement. 
+;;; (Chaos Eternal)
 
 ;;; We adhere to Posix file name rules, plus we treat files beginning with
 ;;; ~ as absolute paths.
@@ -39,6 +39,7 @@
                   home-dir
                   home-file))
 
+
 (define (file-name-directory? fname)
   (or (string=? fname "")			; Note! "" is directory (cwd)
       (char=? #\/ (string-ref fname (- (string-length fname) 1)))))
@@ -48,7 +49,8 @@
       (not (char=? #\/ (string-ref fname (- (string-length fname) 1))))))
 
 (define (file-name-as-directory fname)
-  (if (string=? fname ".") ""
+  (if (string=? fname ".")
+      ""
       (let ((len (string-length fname)))
 	(if (and (> len 0)
 		 (char=? #\/ (string-ref fname (- len 1))))
@@ -66,12 +68,13 @@
 
 (define (directory-as-file-name fname)
   (let ((len (string-length fname)))
-    (if (zero? len) "."		; "" -> "."
-
+    (if (zero? len)
+	"."		; "" -> "."
 	;; Trim trailing slashes.
 	(cond ((last-non-slash fname) =>
 	       (lambda (i)
-		 (if (= i (- len 1)) fname ; No slash.
+		 (if (= i (- len 1))
+		     fname ; No slash.
 		     (substring fname 0 (+ i 1))))) ; Trim slashes.
 
 	      ;;; Solid slashes -- invoke weird Posix rule.
@@ -79,12 +82,14 @@
 
 
 (define (ensure-file-name-is-directory fname)
-  (if (string=? fname "") ""
+  (if (string=? fname "")
+      ""
       (file-name-as-directory fname)))
 
 
 (define (ensure-file-name-is-nondirectory fname)
-  (if (string=? fname "") ""
+  (if (string=? fname "")
+      ""
       (directory-as-file-name fname)))
 
 
@@ -139,7 +144,9 @@
     (apply string-append
 	   (if (and (pair? pathlist)
 		    (string=? "" (car pathlist)))
-	       w/slashes ; Absolute path not relocated.
+               (if (null? (cdr pathlist)) ; special case for pathlist = '("")
+                   '("/")
+                   w/slashes) ; Absolute path not relocated.
 	       (cons (file-name-as-directory root) w/slashes)))))
 		   
 
@@ -156,9 +163,11 @@
 ;;; /usr/shivers/.login are not considered extensions.
 
 (define (file-name-extension-index fname)
-  (let ((dot (string-index-right fname #\.)))
+  (let ((dot (string-index-right fname #\.))
+	(slash (string-index-right fname #\/)))
     (if (and dot
 	     (> dot 0)
+	     (if slash (> dot slash) #t)
 	     (not (char=? #\/ (string-ref fname (- dot 1)))))
 	dot
 	(string-length fname))))
@@ -178,7 +187,8 @@
   (let ((len (string-length fname)))
     (if (and (> len 0) (char=? #\~ (string-ref fname 0)))
 	(let ((tilde->homedir (lambda (end)
-				(if (= end 1) home-directory ; Just ~
+				(if (= end 1)
+				    home-directory ; Just ~
 				    (let* ((user (substring fname 1 end))
 					   (ui (name->user-info user)))
 				      (user-info:home-dir ui))))))
@@ -192,7 +202,8 @@
 (define (resolve-file-name fname . maybe-root)
   (let* ((root (ensure-file-name-is-nondirectory (:optional maybe-root ".")))
 	 (fname (ensure-file-name-is-nondirectory fname)))
-    (if (zero? (string-length fname)) "/"
+    (if (zero? (string-length fname))
+	"/"
 	(let ((c (string-ref fname 0)))
 	  (cond ((char=? #\/ c) fname) 	; Absolute file name.
 
@@ -251,9 +262,11 @@
 
 (define (absolute-file-name fname . maybe-root)
   (let ((fname (ensure-file-name-is-nondirectory fname)))
-    (if (zero? (string-length fname)) "/"
+    (if (zero? (string-length fname))
+	"/"
 	(simplify-file-name
-	  (if (char=? #\/ (string-ref fname 0)) fname 	; Absolute file name.
+	  (if (char=? #\/ (string-ref fname 0))
+	      fname 	; Absolute file name.
 	      (let ((root (:optional maybe-root (cwd))))
 		(string-append (file-name-as-directory root) fname)))))))
 
@@ -289,7 +302,8 @@
 	   (let ((ans (cons (substring s 0 i) ans))
 		 (s (substring s (+ i 1) len))
 		 (len (- len (+ i 1))))
-	     (if (zero? len) (lp ans "")
+	     (if (zero? len)
+		 (lp ans "")
 		 (let ((next-char (string-ref s 0)))
 		   (cond ((char=? #\{ next-char)
 			  (cond ((string-index s #\}) =>
