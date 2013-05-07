@@ -65,3 +65,13 @@ lrwxrwxrwx 1 root root      8 Aug 11  2011 /bin/lessfile -> lesspipe
 -rwxr-xr-x 1 root root  44640 Mar 30  2012 /bin/lsblk
 -rwxr-xr-x 1 root root   6272 Nov 21  2011 /bin/lsmod
 $3 = 0
+
+Example on run-extras:
+scheme@(guile-user)> (use-modules (scsh syntax) (scsh scsh) (ice-9 receive))
+scheme@(guile-user)> (use-modules (scsh run-extras))
+scheme@(guile-user)> (receive (status out err)
+          (run/collecting (1 2) (cat /usr/kmshea/mbox))
+   (list status (port->string out) (port->string err)))
+$1 = (256 "" "cat: /usr/kmshea/mbox: No such file or directory\n")
+
+*** Note: run-extras must be imported separately.
