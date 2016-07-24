@@ -503,18 +503,23 @@
   (receive (port proc) (run/port+proc* thunk)
     port))
 
-(define (run/string* thunk) 
-  (close-after (run/port* thunk) port->string))
+(define (run/port-collect* thunk collect-procedure)
+  (receive (port proc) (run/port+proc* thunk)
+    (let ((r (close-after port collect-procedure)))
+      (wait proc)
+      r)))
+
+(define (run/string* thunk)
+  (run/port-collect* thunk port->string))
 
 (define (run/sexp* thunk)
-  (close-after (run/port* thunk) read))
+  (run/port-collect* thunk read))
 
 (define (run/sexps* thunk)
-  (close-after (run/port* thunk) port->sexp-list))
+  (run/port-collect* thunk port->sexp-list))
 
 (define (run/strings* thunk)
-  (close-after (run/port* thunk) port->string-list))
-
+  (run/port-collect* thunk port->string-list))
 
 ;;; Read characters from PORT until EOF, collect into a string.
 
