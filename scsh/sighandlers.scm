@@ -156,7 +156,6 @@
 (maybe-define-signal SIGTSTP)
 (maybe-define-signal SIGTTIN)
 (maybe-define-signal SIGTTOU)
-(maybe-define-signal SIGUNUSED)
 (maybe-define-signal SIGURG)
 (maybe-define-signal SIGUSR1)
 (maybe-define-signal SIGUSR2)
