@@ -34,9 +34,9 @@
        (false-if-exception (fileno x))))
 
 (define set-port-buffering setvbuf)
-(define bufpol/block _IOFBF)
-(define bufpol/line _IOLBF)
-(define bufpol/none _IONBF)
+(define bufpol/block 'block)
+(define bufpol/line 'line)
+(define bufpol/none 'none)
 
 ;;(define (%fdport-set-buffering/errno port policy size)
 ;; (%fdport*-set-buffering/errno (fdport-data port) policy size))
