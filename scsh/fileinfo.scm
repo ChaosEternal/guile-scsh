@@ -11,7 +11,6 @@
   :use-module (scsh fname)
   :use-module (ice-9 optargs)
   :use-module (scsh optional)
-  :use-module (scsh syntax)
   :use-module (scsh utilities)
   :use-module (scsh errno)
   :export (file-not-readable? file-not-writable? file-not-executable?

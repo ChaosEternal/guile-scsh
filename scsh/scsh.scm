@@ -11,7 +11,6 @@
   :use-module (srfi srfi-1)
   :use-module (scsh utilities)
   :use-module (scsh ssyntax)
-  :use-module (scsh syntax)
   :use-module (scsh syscalls)
   :use-module (scsh bitwise)
   :use-module (scsh fluid)
